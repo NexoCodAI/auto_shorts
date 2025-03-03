@@ -1,0 +1,13 @@
+{
+    "title": "Quantum Corsairs: Nebula's Edge",
+    "author": "Jax Meridian",
+    "synopsis": "Dive into the neon-drenched future where rogue starship captains, the Quantum Corsairs, defy galactic law.  Captain Ryla, haunted by a past betrayal, navigates treacherous nebula storms and corporate assassins to uncover a hidden AI artifact promising unimaginable power.  But wielding it means confronting her deepest fears and sparking a rebellion against the iron-fisted Galactic Federation.  Prepare for pulse-pounding space battles, cyberpunk intrigue, and a fight for freedom at the galaxy's edge, where destiny hangs in the balance and every choice is a gamble.",
+    "font": {
+        "name": "Roboto Mono",
+        "url": "https://fonts.google.com/specimen/Roboto+Mono"
+    },
+    "song": {
+        "title": "Interstellar Overdrive",
+        "artist": "Pink Floyd"
+    }
+}
