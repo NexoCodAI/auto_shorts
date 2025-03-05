@@ -1,0 +1,52 @@
+import os
+import json
+import logging
+from google.auth.transport.requests import Request
+from google_auth_oauthlib.flow import InstalledAppFlow
+from google.oauth2.credentials import Credentials
+
+# Define the YouTube API scope
+SCOPES = ['https://www.googleapis.com/auth/youtube.upload']
+
+# Client configuration (replace with your actual credentials)
+CLIENT_CONFIG = {
+    "installed": {
+        "client_id": "146379619750-e2tnhddgoh7avekh0ih35g9hr4ufikqu.apps.googleusercontent.com",
+        "project_id": "your-project-id",
+        "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+        "token_uri": "https://oauth2.googleapis.com/token",
+        "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+        "client_secret": "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",
+        "redirect_uris": ["http://localhost"]
+    }
+}
+
+def run_local_server(flow, ports=[8080, 8081, 8090]):
+    for port in ports:
+        try:
+            logging.info(f"Trying port {port}...")
+            return flow.run_local_server(port=port, prompt='consent', open_browser=True)
+        except OSError:
+            logging.warning(f"Port {port} is in use, trying next.")
+    raise RuntimeError("No available port found.")
+
+def get_credentials():
+    token_file = 'youtube_upload_token.json'
+    credentials = None
+    if os.path.exists(token_file) and os.path.getsize(token_file) > 0:
+        try:
+            credentials = Credentials.from_authorized_user_file(token_file, SCOPES)
+        except Exception:
+            os.remove(token_file)
+    if credentials and credentials.expired and credentials.refresh_token:
+        credentials.refresh(Request())
+    if not credentials or not credentials.valid:
+        flow = InstalledAppFlow.from_client_config(CLIENT_CONFIG, SCOPES)
+        credentials = run_local_server(flow)
+        with open(token_file, 'w') as f:
+            f.write(credentials.to_json())
+    return credentials
+
+if __name__ == '__main__':
+    creds = get_credentials()
+    print("Credentials obtained and saved to youtube_upload_token.json")
