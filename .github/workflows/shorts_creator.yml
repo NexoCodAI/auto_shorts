@@ -52,6 +52,8 @@ jobs:
           pip install youtube-dl
           # Additional requested packages
           pip install "kokoro>=0.8.2" soundfile
+          # NEW: install google-generativeai for import google.generativeai
+          pip install google-generativeai
       
       - name: Create necessary directories
         run: |
