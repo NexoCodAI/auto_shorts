@@ -1,0 +1,1 @@
+https://www.facebook.com/v12.0/dialog/oauth?client_id=857044826528407&redirect_uri=https://nexocodai.github.io/&scope=instagram_basic,instagram_content_publish&response_type=code
