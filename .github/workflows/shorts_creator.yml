@@ -79,9 +79,9 @@ jobs:
           src: Video/final_videos
           dest: /videos
       
-      # Optional: Archive workflow outputs as artifacts in GitHub
+      # Using a specific version of upload-artifact that is known to be reliable
       - name: Archive final videos
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v2
         with:
           name: final-videos
           path: Video/final_videos
