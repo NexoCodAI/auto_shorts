@@ -31,32 +31,18 @@ jobs:
       - name: Install system dependencies
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y ffmpeg
-          sudo apt-get install -y libsm6 libxext6 libxrender-dev
-          sudo apt-get install -y libsndfile1
-          sudo apt-get install -y espeak-ng  # For text-to-speech
+          sudo apt-get install -y ffmpeg libsm6 libxext6 libxrender-dev libsndfile1 espeak-ng
       
       - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install jupyter nbconvert ipykernel matplotlib pandas numpy
-          pip install google-api-python-client google-auth-httplib2 google-auth-oauthlib
-          pip install pydub moviepy pillow requests
-          pip install papermill
-          pip install opencv-python
-          pip install dropbox
-          pip install google-cloud-texttospeech
-          pip install SpeechRecognition
-          pip install pytube
-          pip install beautifulsoup4
-          pip install youtube-dl
-          pip install "kokoro>=0.8.2" soundfile
-          pip install google-generativeai
-          pip install yt-dlp
+          python -m pip install jupyter nbconvert ipykernel matplotlib pandas numpy
+          python -m pip install google-api-python-client google-auth-httplib2 google-auth-oauthlib
+          python -m pip install pydub moviepy pillow requests
+          python -m pip install papermill opencv-python dropbox google-cloud-texttospeech SpeechRecognition pytube beautifulsoup4 youtube-dl "kokoro>=0.8.2" soundfile google-generativeai yt-dlp
       
       - name: Register ipykernel for current environment
         run: python -m ipykernel install --name=github-actions --display-name="Python 3 (github-actions)" --sys-prefix
-
       
       - name: Verify moviepy installation
         run: python -c "import moviepy.editor; print('moviepy is installed')"
@@ -117,4 +103,3 @@ jobs:
           dropbox_access_token: ${{ secrets.DROPBOX_ACCESS_TOKEN }}
           src: Storage/temp_captions
           dest: /text_files/captions
-
