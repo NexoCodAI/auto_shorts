@@ -8,9 +8,17 @@ on:
   # Optional: Schedule runs
   # schedule:
   #   - cron: '0 0 * * 0'  # Run weekly on Sundays at midnight
+
 jobs:
   generate-and-upload:
     runs-on: ubuntu-latest
+    
+    # Set UTF-8 locale environment variables
+    env:
+      PYTHONIOENCODING: "utf-8"
+      LC_ALL: "C.UTF-8"
+      LANG: "C.UTF-8"
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -20,22 +28,46 @@ jobs:
         with:
           python-version: '3.10'
       
-      - name: Install dependencies
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y ffmpeg
+          sudo apt-get install -y libsm6 libxext6 libxrender-dev
+          sudo apt-get install -y libsndfile1
+          sudo apt-get install -y espeak-ng  # For text-to-speech
+      
+      - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install jupyter nbconvert ipykernel matplotlib pandas numpy google-api-python-client google-auth-httplib2 google-auth-oauthlib pydub moviepy pillow requests
+          pip install jupyter nbconvert ipykernel matplotlib pandas numpy
+          pip install google-api-python-client google-auth-httplib2 google-auth-oauthlib
+          pip install pydub moviepy pillow requests
           pip install papermill
+          pip install opencv-python
+          pip install dropbox
+          pip install google-cloud-texttospeech
+          pip install SpeechRecognition
+          pip install pytube
+          pip install beautifulsoup4
+          pip install youtube-dl
+          # Additional requested packages
+          pip install "kokoro>=0.8.2" soundfile
       
-      - name: Install ffmpeg
+      - name: Create necessary directories
         run: |
-          sudo apt-get update
-          sudo apt-get install -y ffmpeg
+          mkdir -p Storage/temp_tweets
+          mkdir -p Storage/temp_captions
+          mkdir -p Storage/temp_audio
+          mkdir -p Storage/temp_music
+          mkdir -p Storage/temp_images
+          mkdir -p Video/final_videos
       
-      - name: Run setup script
-        run: |
-          chmod +x setup.sh
-          ./setup.sh
+      - name: Set up credentials
         shell: bash
+        run: |
+          # Example: Create a file containing your Dropbox token
+          echo "${{ secrets.DROPBOX_ACCESS_TOKEN }}" > ~/.dropbox_token
+          # Add any other credential or environment setup you need here
       
       - name: Run Gemini/Ficción.ipynb
         run: |
@@ -65,14 +97,23 @@ jobs:
         run: |
           papermill Video/video_assembler.ipynb Video/video_assembler_output.ipynb
       
-      - name: Create Dropbox token file
-        run: |
-          echo "${{ secrets.DROPBOX_ACCESS_TOKEN }}" > ~/.dropbox_token
-        shell: bash
-      
       - name: Upload videos to Dropbox
         uses: deka0106/upload-to-dropbox@v2
         with:
           dropbox_access_token: ${{ secrets.DROPBOX_ACCESS_TOKEN }}
           src: Video/final_videos
           dest: /videos
+      
+      - name: Upload tweet text files to Dropbox
+        uses: deka0106/upload-to-dropbox@v2
+        with:
+          dropbox_access_token: ${{ secrets.DROPBOX_ACCESS_TOKEN }}
+          src: Storage/temp_tweets
+          dest: /text_files/tweets
+      
+      - name: Upload caption text files to Dropbox
+        uses: deka0106/upload-to-dropbox@v2
+        with:
+          dropbox_access_token: ${{ secrets.DROPBOX_ACCESS_TOKEN }}
+          src: Storage/temp_captions
+          dest: /text_files/captions
