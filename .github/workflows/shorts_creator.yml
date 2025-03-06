@@ -55,7 +55,8 @@ jobs:
           pip install yt-dlp
       
       - name: Register ipykernel for current environment
-        run: python -m ipykernel install --user --name=github-actions --display-name="Python 3 (github-actions)" --sys-prefix
+        run: python -m ipykernel install --name=github-actions --display-name="Python 3 (github-actions)" --sys-prefix
+
       
       - name: Verify moviepy installation
         run: python -c "import moviepy.editor; print('moviepy is installed')"
