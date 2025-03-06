@@ -77,9 +77,9 @@ jobs:
           src: Video/final_videos
           dest: /videos
       
-      # Using a different approach to archive files
+      # Alternative approach using a different action
       - name: Archive final videos
-        uses: actions/upload-artifact@v1
+        uses: ishworkh/artifact-upload-download-action@v1
         with:
           name: final-videos
           path: Video/final_videos
