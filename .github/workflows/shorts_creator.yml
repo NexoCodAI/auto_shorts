@@ -43,6 +43,9 @@ jobs:
           python -m pip install --upgrade pydub pillow requests
           python -m pip install --upgrade papermill opencv-python dropbox google-cloud-texttospeech SpeechRecognition pytube beautifulsoup4 youtube-dl kokoro soundfile google-generativeai yt-dlp
           python -m pip install moviepy==1.0.3
+          # Add dropbox SDK for custom upload handling
+          python -m pip install dropbox
+
       - name: Register ipykernel for current environment
         run: python -m ipykernel install --name=github-actions --display-name="Python 3 (github-actions)" --sys-prefix
 
@@ -85,27 +88,139 @@ jobs:
       - name: Run Video/video_assembler.ipynb
         run: papermill Video/video_assembler.ipynb Video/video_assembler_output.ipynb -k github-actions
 
-      - name: Upload videos to Dropbox
-        uses: deka0106/upload-to-dropbox@v2
-        with:
-          dropbox_access_token: ${{ secrets.DROPBOX_ACCESS_TOKEN }}
-          src: Video/final_videos
-          dest: /videos
-          multiple: true
+      - name: Check if videos were generated
+        id: check_videos
+        run: |
+          echo "Checking for videos in Video/final_videos directory:"
+          ls -la Video/final_videos/
+          
+          # Count the number of video files
+          VIDEO_COUNT=$(find Video/final_videos/ -type f -name "*.mp4" | wc -l)
+          echo "VIDEO_COUNT=$VIDEO_COUNT" >> $GITHUB_ENV
+          
+          # If no videos were found, report the issue
+          if [ "$VIDEO_COUNT" -eq 0 ]; then
+            echo "No videos were found in Video/final_videos directory!"
+            echo "videos_exist=false" >> $GITHUB_OUTPUT
+          else
+            echo "Found $VIDEO_COUNT videos in Video/final_videos directory."
+            echo "videos_exist=true" >> $GITHUB_OUTPUT
+          fi
 
-      - name: Upload tweet text files to Dropbox
+      # Break uploads into smaller batches with delays between each batch
+      
+      - name: Upload tweet text files to Dropbox (Batch 1)
         uses: deka0106/upload-to-dropbox@v2
         with:
           dropbox_access_token: ${{ secrets.DROPBOX_ACCESS_TOKEN }}
           src: Storage/temp_tweets
           dest: /text_files/tweets
           multiple: true
+      
+      - name: Wait between uploads
+        run: sleep 15
 
-      - name: Upload caption text files to Dropbox
+      - name: Upload caption text files to Dropbox (Batch 2)
         uses: deka0106/upload-to-dropbox@v2
         with:
           dropbox_access_token: ${{ secrets.DROPBOX_ACCESS_TOKEN }}
           src: Storage/temp_captions
           dest: /text_files/captions
           multiple: true
+      
+      - name: Wait before video upload
+        run: sleep 30
 
+      # Custom approach for video upload with retry logic
+      - name: Upload videos to Dropbox with retry logic
+        if: ${{ steps.check_videos.outputs.videos_exist == 'true' }}
+        run: |
+          python -c "
+          import os
+          import time
+          import dropbox
+          from dropbox.exceptions import ApiError
+          import glob
+          
+          # Initialize Dropbox client
+          dbx = dropbox.Dropbox(os.environ['DROPBOX_TOKEN'])
+          
+          # Get all video files
+          video_files = glob.glob('Video/final_videos/*.mp4')
+          print(f'Found {len(video_files)} video files to upload')
+          
+          # Function to upload with retries
+          def upload_with_retry(local_path, remote_path, max_retries=5, delay=30):
+              attempt = 0
+              while attempt < max_retries:
+                  try:
+                      print(f'Uploading {local_path} to Dropbox as {remote_path} (Attempt {attempt+1})')
+                      with open(local_path, 'rb') as f:
+                          dbx.files_upload(f.read(), remote_path, mode=dropbox.files.WriteMode.overwrite)
+                      print(f'Successfully uploaded {local_path}')
+                      return True
+                  except ApiError as e:
+                      if e.error.is_path() and e.error.get_path().is_insufficient_space():
+                          print('Error: Insufficient space in Dropbox')
+                          return False
+                      elif hasattr(e.error, 'is_rate_limited') and e.error.is_rate_limited():
+                          rate_limit_error = e.error.get_rate_limit_error()
+                          retry_after = rate_limit_error.retry_after if hasattr(rate_limit_error, 'retry_after') else delay
+                          print(f'Rate limit hit. Waiting for {retry_after} seconds before retry.')
+                          time.sleep(retry_after)
+                      else:
+                          print(f'Error: {e}')
+                          time.sleep(delay)
+                  except Exception as e:
+                      print(f'Unexpected error: {e}')
+                  
+                  attempt += 1
+                  if attempt < max_retries:
+                      print(f'Retrying... ({attempt+1}/{max_retries})')
+                  else:
+                      print(f'Max retries reached for {local_path}. Moving to next file.')
+                  
+                  # Add delay between attempts
+                  time.sleep(delay)
+              
+              return False
+          
+          # Process files in batches with delays between files
+          batch_size = 2
+          for i in range(0, len(video_files), batch_size):
+              batch = video_files[i:i+batch_size]
+              print(f'Processing batch {i//batch_size + 1}')
+              
+              for local_file in batch:
+                  # Extract filename
+                  filename = os.path.basename(local_file)
+                  # Create Dropbox path
+                  dropbox_path = f'/videos/{filename}'
+                  
+                  # Upload with retry logic
+                  success = upload_with_retry(local_file, dropbox_path)
+                  if not success:
+                      print(f'Failed to upload {local_file} after multiple attempts')
+                  
+                  # Add delay between files within a batch
+                  time.sleep(10)
+              
+              # Add a longer delay between batches
+              if i + batch_size < len(video_files):
+                  print(f'Waiting between batches...')
+                  time.sleep(30)
+          
+          print('Video upload process completed')
+          " 
+        env:
+          DROPBOX_TOKEN: ${{ secrets.DROPBOX_ACCESS_TOKEN }}
+
+      - name: Report upload status
+        if: always()
+        run: |
+          echo "Tweet and caption file upload attempted"
+          if [ "$VIDEO_COUNT" -eq 0 ]; then
+            echo "No videos were found to upload. Check video_assembler.ipynb for issues."
+          else
+            echo "Attempted to upload $VIDEO_COUNT videos with retry logic"
+          fi
