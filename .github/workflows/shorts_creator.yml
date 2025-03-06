@@ -50,10 +50,9 @@ jobs:
           pip install pytube
           pip install beautifulsoup4
           pip install youtube-dl
-          # Additional requested packages
           pip install "kokoro>=0.8.2" soundfile
-          # NEW: install google-generativeai for import google.generativeai
           pip install google-generativeai
+          pip install yt-dlp
       
       - name: Create necessary directories
         run: |
