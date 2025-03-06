@@ -35,11 +35,13 @@ jobs:
 
       - name: Install Python dependencies
         run: |
+          # Upgrade pip first
           python -m pip install --upgrade pip
-          python -m pip install "jupyter>=1.0.0" "nbconvert>=5.6.1" "ipykernel>=6.0.0" "matplotlib>=3.4.0" "pandas>=1.2.0" "numpy>=1.20.0"
-          python -m pip install "google-api-python-client>=2.0.2" "google-auth-httplib2>=0.0.4" "google-auth-oauthlib>=0.4.5"
-          python -m pip install "pydub>=0.25.1" "moviepy>=1.0.3" "pillow>=8.1.0" "requests>=2.25.1"
-          python -m pip install "papermill>=2.3.3" "opencv-python>=4.5.1" "dropbox>=11.6.0" "google-cloud-texttospeech>=2.4.0" "SpeechRecognition>=3.8.1" "pytube>=10.9.0" "beautifulsoup4>=4.9.3" "youtube-dl>=2021.1.16" "kokoro>=0.8.2" "soundfile>=0.10.3" "google-generativeai>=1.4.0" "yt-dlp>=2021.1.16"
+          # Install and upgrade key packages to their latest versions
+          python -m pip install --upgrade jupyter nbconvert ipykernel matplotlib pandas numpy
+          python -m pip install --upgrade google-api-python-client google-auth-httplib2 google-auth-oauthlib
+          python -m pip install --upgrade pydub moviepy pillow requests
+          python -m pip install --upgrade papermill opencv-python dropbox google-cloud-texttospeech SpeechRecognition pytube beautifulsoup4 youtube-dl kokoro soundfile google-generativeai yt-dlp
 
       - name: Register ipykernel for current environment
         run: python -m ipykernel install --name=github-actions --display-name="Python 3 (github-actions)" --sys-prefix
@@ -103,3 +105,4 @@ jobs:
           dropbox_access_token: ${{ secrets.DROPBOX_ACCESS_TOKEN }}
           src: Storage/temp_captions
           dest: /text_files/captions
+
