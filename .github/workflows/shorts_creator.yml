@@ -91,6 +91,7 @@ jobs:
           dropbox_access_token: ${{ secrets.DROPBOX_ACCESS_TOKEN }}
           src: Video/final_videos
           dest: /videos
+          multiple: true
 
       - name: Upload tweet text files to Dropbox
         uses: deka0106/upload-to-dropbox@v2
@@ -98,6 +99,7 @@ jobs:
           dropbox_access_token: ${{ secrets.DROPBOX_ACCESS_TOKEN }}
           src: Storage/temp_tweets
           dest: /text_files/tweets
+          multiple: true
 
       - name: Upload caption text files to Dropbox
         uses: deka0106/upload-to-dropbox@v2
@@ -105,4 +107,5 @@ jobs:
           dropbox_access_token: ${{ secrets.DROPBOX_ACCESS_TOKEN }}
           src: Storage/temp_captions
           dest: /text_files/captions
+          multiple: true
 
