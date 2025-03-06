@@ -55,50 +55,46 @@ jobs:
           pip install yt-dlp
       
       - name: Register ipykernel for current environment
-        run: python -m ipykernel install --user --name github-actions --display-name "Python 3 (github-actions)"
+        run: python -m ipykernel install --user --name=github-actions --display-name="Python 3 (github-actions)" --sys-prefix
+      
+      - name: Verify moviepy installation
+        run: python -c "import moviepy.editor; print('moviepy is installed')"
       
       - name: Create necessary directories
         run: |
-          mkdir -p Storage/temp_tweets
-          mkdir -p Storage/temp_captions
-          mkdir -p Storage/temp_audio
-          mkdir -p Storage/music_library
-          mkdir -p Storage/temp_images
-          mkdir -p Video/final_videos
+          mkdir -p Storage/temp_tweets \
+                   Storage/temp_captions \
+                   Storage/temp_audio \
+                   Storage/music_library \
+                   Storage/temp_images \
+                   Video/final_videos
       
       - name: Set up credentials
         shell: bash
         run: |
-          # Example: Create a file containing your Dropbox token
+          # Create a file containing your Dropbox token
           echo "${{ secrets.DROPBOX_ACCESS_TOKEN }}" > ~/.dropbox_token
       
       - name: Run Gemini/Ficción.ipynb
-        run: |
-          papermill Gemini/Ficción.ipynb Gemini/Ficción_output.ipynb -k github-actions
+        run: papermill Gemini/Ficción.ipynb Gemini/Ficción_output.ipynb -k github-actions
       
       - name: Run Gemini/tweets.ipynb
-        run: |
-          papermill Gemini/tweets.ipynb Gemini/tweets_output.ipynb -k github-actions
+        run: papermill Gemini/tweets.ipynb Gemini/tweets_output.ipynb -k github-actions
       
       - name: Run Gemini/captions.ipynb
-        run: |
-          papermill Gemini/captions.ipynb Gemini/captions_output.ipynb -k github-actions
+        run: papermill Gemini/captions.ipynb Gemini/captions_output.ipynb -k github-actions
       
       - name: Run Creators/audio_tts.ipynb
-        run: |
-          papermill Creators/audio_tts.ipynb Creators/audio_tts_output.ipynb -k github-actions
+        run: papermill Creators/audio_tts.ipynb Creators/audio_tts_output.ipynb -k github-actions
       
       - name: Run Creators/music_downloader.ipynb
-        run: |
-          papermill Creators/music_downloader.ipynb Creators/music_downloader_output.ipynb -k github-actions
+        run: papermill Creators/music_downloader.ipynb Creators/music_downloader_output.ipynb -k github-actions
       
       - name: Run Creators/text_animator.ipynb
-        run: |
-          papermill Creators/text_animator.ipynb Creators/text_animator_output.ipynb -k github-actions
+        run: papermill Creators/text_animator.ipynb Creators/text_animator_output.ipynb -k github-actions
       
       - name: Run Video/video_assembler.ipynb
-        run: |
-          papermill Video/video_assembler.ipynb Video/video_assembler_output.ipynb -k github-actions
+        run: papermill Video/video_assembler.ipynb Video/video_assembler_output.ipynb -k github-actions
       
       - name: Upload videos to Dropbox
         uses: deka0106/upload-to-dropbox@v2
@@ -120,3 +116,4 @@ jobs:
           dropbox_access_token: ${{ secrets.DROPBOX_ACCESS_TOKEN }}
           src: Storage/temp_captions
           dest: /text_files/captions
+
