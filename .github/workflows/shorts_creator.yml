@@ -58,7 +58,7 @@ jobs:
           mkdir -p Storage/temp_tweets
           mkdir -p Storage/temp_captions
           mkdir -p Storage/temp_audio
-          mkdir -p Storage/temp_music
+          mkdir -p Storage/music_library
           mkdir -p Storage/temp_images
           mkdir -p Video/final_videos
       
