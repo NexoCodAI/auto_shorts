@@ -1,13 +1,45 @@
 {
-    "title": "Quantum Corsairs: Nebula's Edge",
-    "author": "Jax Meridian",
-    "synopsis": "Dive into the neon-drenched future where rogue starship captains, the Quantum Corsairs, defy galactic law.  Captain Ryla, haunted by a past betrayal, navigates treacherous nebula storms and corporate assassins to uncover a hidden AI artifact promising unimaginable power.  But wielding it means confronting her deepest fears and sparking a rebellion against the iron-fisted Galactic Federation.  Prepare for pulse-pounding space battles, cyberpunk intrigue, and a fight for freedom at the galaxy's edge, where destiny hangs in the balance and every choice is a gamble.",
+    "title": "Dune",
+    "author": "Frank Herbert",
+    "synopsis": "On the desert planet Arrakis, where colossal sandworms guard the life-extending spice Melange, young Paul Atreides finds his destiny intertwined with political intrigue and ancient prophecies.  Betrayed and thrust into a hostile landscape, Paul and his mother Jessica must forge an alliance with the Fremen, Arrakis's native people, to survive.  As galactic powers clash over spice control, Paul\u2019s latent abilities awaken, leading him on a transformative journey.  Dune explores themes of power, religion, ecology, and human potential against a breathtakingly realized universe.",
     "font": {
-        "name": "Roboto Mono",
-        "url": "https://fonts.google.com/specimen/Roboto+Mono"
+        "name": "Neuton",
+        "url": "https://fonts.google.com/specimen/Neuton"
     },
     "song": {
-        "title": "Interstellar Overdrive",
-        "artist": "Pink Floyd"
-    }
+        "title": "An Ending, (Ascent)",
+        "artist": "Brian Eno"
+    },
+    "pexels_videos": [
+        {
+            "description": "Sweeping aerial view of vast, undulating sand dunes under a clear, bright sky. The sand is a mix of golden and ochre hues, stretching to the horizon with no visible vegetation or human structures.",
+            "search_term": "aerial vast desert dunes"
+        },
+        {
+            "description": "Slow-motion shot of fine sand particles being blown across a textured surface, creating swirling patterns. The lighting is dramatic, with deep shadows and highlights emphasizing the movement and detail of the sand.",
+            "search_term": "sand blowing slow motion texture"
+        },
+        {
+            "description": "Timelapse of a desert landscape transitioning from day to night.  The sky shifts from vibrant oranges and purples at sunset to deep indigo and black, revealing a sky full of stars.  The desert floor remains silhouetted.",
+            "search_term": "desert timelapse day to night stars"
+        },
+        {
+            "description": "Footage of a person walking in flowing robes across a windy desert landscape. The robes billow in the wind, and the person's face is partially obscured by a hood or scarf, creating a sense of mystery and journey.",
+            "search_term": "desert robes walking wind"
+        },
+        {
+            "description": "Close-up shot of shimmering spice-like particles falling slowly in warm, diffused light. The particles are iridescent, with hints of gold, orange, and red, creating a mystical and valuable substance visual.",
+            "search_term": "iridescent spice particles shimmering"
+        }
+    ],
+    "image_descriptions": [
+        "A colossal sandworm, hundreds of meters long, emerging from beneath a vast, windswept desert. The sky is a hazy orange from sandstorms, and the worm's segmented body is a deep, earthy brown, with rows of sharp teeth visible in its gaping maw.",
+        "A Fremen sietch carved into a massive rock formation in the deep desert. The entrance is subtly blended into the rock face, with minimal ornamentation. The color palette is muted browns and greys, emphasizing the harsh environment and resourcefulness of the inhabitants.",
+        "Paul Atreides, young and determined, standing atop a high dune at sunset on Arrakis. He is wearing Fremen-style stillsuit and gazing towards the horizon, a sense of destiny and contemplation in his eyes. The sky behind him is ablaze with orange and purple hues.",
+        "A spice harvester, a large, caterpillar-like machine, slowly traversing a vast spice field on Arrakis. Dust plumes rise around it, and smaller figures in stillsuits are visible working around the machine. The scene is dominated by the ochre and brown of the desert and the metallic grey of the harvester.",
+        "Jessica, elegant and resolute, practicing Bene Gesserit mental discipline in a sparsely furnished Arrakeen chamber. She is dressed in simple, dark robes, and the room is dimly lit, highlighting her intense focus and inner strength. The color palette is muted and somber.",
+        "A panoramic view of Arrakeen city at night, built into a rocky plateau overlooking the desert. Lights flicker in the city, contrasting with the vast darkness of the surrounding desert. The sky is filled with stars, and a sense of isolation and fragility pervades the scene.",
+        "The Baron Harkonnen, obese and menacing, levitating in a dark, opulent chamber on Giedi Prime. The room is decorated with gothic and industrial elements, and the lighting is harsh and dramatic, emphasizing his grotesque features and air of cruel power. The color scheme is dark and metallic, with hints of deep red and purple."
+    ],
+    "genre": "sci-fi"
 }
